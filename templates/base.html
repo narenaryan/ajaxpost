@@ -1,0 +1,82 @@
+
+	<html>
+	<head>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://getbootstrap.com/examples/signin/signin.css" rel="stylesheet">
+	</head>
+
+	<body>
+
+	  <div class="container">
+
+	      <form class="form-signin" method="POST">
+	      {% csrf_token %}
+	        <h2 class="form-signin-heading">Enter Details</h2>
+	        <label for="inputEmail" class="sr-only">Email address</label>
+	        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+	        <label for="inputPassword" class="sr-only">Password</label>
+	        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+	        <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	      </form>
+
+	    </div>
+
+	    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+ <script>
+
+//For getting CSRF token
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+//For doing AJAX post
+ $("#submit").click(function(e) {
+
+    e.preventDefault();
+
+    var csrftoken = getCookie('csrftoken');
+
+    var email = $('#inputEmail').val();
+
+    var password = $('#inputPassword').val();
+
+//This is the Ajax post.Observe carefully. It is nothing but details of where_to_post,what_to_post
+   
+ $.ajax({
+ url : window.location.href, // the endpoint,commonly same url
+ type : "POST", // http method
+ data : { csrfmiddlewaretoken : csrftoken, 
+ email : email,
+ password : password
+ }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            console.log(json); // another sanity check
+            alert('Hi   '+json['email'] +'!.' + '  You have entered password:'+ json['password']);
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+});
+
+    </script>
+
+</body>
+</html>
